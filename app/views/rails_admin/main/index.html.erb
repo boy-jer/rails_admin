@@ -49,37 +49,4 @@
             </table>
           </div>
         </div>
-        <div class="ra-block">
-          <div class="ui-widget-header">
-            <%= t("admin.history.name") %>
-          </div>
-          <div class="ra-block-content">
-            <div id="timeline"></div>
-            <div style="margin-top: 10px;" id="listingHistory" class="block list">
-    <%= render(:partial => 'history', :locals => {:month => Time.now.month, :year => Time.now.year, :history => @history}) -%>
-            </div>
-            <%= javascript_tag do %>
-              $j(document).ready(function($) {
-                var cache = {};
-                 $("#timeline").timeline({
-                   url: "<%= rails_admin_history_slider_path %>",
-                   monthChanged: function(month, year) {
-                     if (cache[year] && cache[year][month]) {
-                       $("#listingHistory").html(cache[year][month]);
-                     } else {
-                       $j("#listingHistory").load(
-                         "<%= rails_admin_history_list_path %>",
-                         { month: month, year: year },
-                         function(response, status, xhr) {
-                           if (!cache[year]) { cache[year] = {}; }
-                           cache[year][month] = response;
-                         }
-                       );
-                     }
-                   },
-                   monthNames: <%= ActiveSupport::JSON.encode(month_names).html_safe %>
-                 });
-              });
-            <% end %>
-          </div>
-        </div>
+        <!-- history section -->
