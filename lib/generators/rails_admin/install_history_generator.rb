@@ -5,6 +5,11 @@ module RailsAdmin
 
     desc "RailsAdmin Install"
 
+#    def history_migration
+#      puts "Also you need a new migration. We'll generate it for you now."
+#      invoke 'rails_admin:install_migrations'
+#    end
+
     def add_history_in_index_main_controller
       gsub_file "#{File.expand_path('../../../../', __FILE__)}/app/controllers/rails_admin/main_controller.rb", 
         /(#{Regexp.escape("def index")})/ do
