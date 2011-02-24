@@ -11,11 +11,6 @@ module RailsAdmin
       @page_name = t("admin.dashboard.pagename")
       @page_type = "dashboard"
 
-      @history = AbstractHistory.history_latest_summaries
-      @month = DateTime.now.month
-      @year = DateTime.now.year
-      @history= AbstractHistory.history_for_month(@month, @year)
-
       @abstract_models = RailsAdmin::Config.visible_models.map(&:abstract_model)
 
       @most_recent_changes = {}
@@ -85,7 +80,6 @@ module RailsAdmin
 
       if @object.save
         object_label = @model_config.with(:object => @object).object_label
-        AbstractHistory.create_history_item("Created #{object_label}", @object, @abstract_model, _current_user)
         respond_to do |format|
           format.html do
             redirect_to_on_success
@@ -127,7 +121,6 @@ module RailsAdmin
       @object.attributes = @attributes
 
       if @object.save
-        AbstractHistory.create_update_history @abstract_model, @object, @cached_assocations_hash, associations_hash, @modified_assoc, @old_object, _current_user
         redirect_to_on_success
       else
         handle_save_error :edit
@@ -149,8 +142,6 @@ module RailsAdmin
       @object = @object.destroy
       flash[:notice] = t("admin.delete.flash_confirmation", :name => @model_config.label)
 
-      AbstractHistory.create_history_item("Destroyed #{@model_config.with(:object => @object).object_label}", @object, @abstract_model, _current_user)
-
       redirect_to rails_admin_list_path(:model_name => @abstract_model.to_param)
     end
 
@@ -171,7 +162,6 @@ module RailsAdmin
 
       @destroyed_objects.each do |object|
         message = "Destroyed #{@model_config.with(:object => object).object_label}"
-        AbstractHistory.create_history_item(message, object, @abstract_model, _current_user)
       end
 
       redirect_to rails_admin_list_path(:model_name => @abstract_model.to_param)
