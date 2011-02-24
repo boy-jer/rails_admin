@@ -81,5 +81,17 @@ message = "Destroyed \#{@model_config.list.with(:object => object).object_label}
       END
       end
     end
+
+    def add_history_list_view
+      gsub_file "#{File.expand_path('../../../../', __FILE__)}/app/views/rails_admin/main/list.html.erb", 
+        /(#{Regexp.escape("<!-- history link -->")})/ do
+      <<-END
+      <!-- history link -->
+      <li>
+       <%= link_to(t("admin.history.name"), rails_admin_history_model_path, :class => "addlink") %>
+      </li>
+      END
+      end
+    end
   end
 end
